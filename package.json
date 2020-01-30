@@ -7,7 +7,7 @@
   "scripts": {
     "heroku-postbuild": "npm install",
     "heroku-prebuild": "npm install --dev",
-    "prod": "NODE_ENV=production babel-node app.js",
+    "prod": "NODE_ENV=production babel-node server.js",
     "start": "npm run prod"
   },
   "dependencies": {
