@@ -1,4 +1,4 @@
-export const schemaTest = {
+export const dataSchema = {
   posts: [
     {
       id: 0,

@@ -1,9 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import { Route, Link } from "react-router-dom";
+import { connect } from "react-redux";
 import { Switch } from "react-router-dom";
 import routerConfig from "./configs/router";
-import { schemaTest } from "./schema";
-import api from "./services/api";
+import { dataSchema } from "./schema";
+// import api from "./services/api";
+
+import { reqData } from "./actions/dataActions";
 
 import { OrderPageLoader, HomePageLoader } from "./loadable";
 
@@ -24,28 +27,46 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.renderApi();
+    this.props.reqData();
+    // this.renderApi();
   }
 
-  renderApi = () => {
-    api.TestImpl.get().then(data =>
-      this.setState({ loading: false, data: data.data })
-    );
-  };
+  
+  // asyncData = this.props.data.profile.name;
+  // renderData = () => {
+  //   return <h1>{this.asyncData}</h1>
+  // }
+  // renderApi = () => {
+  //   api.TestImpl.get().then(data =>
+  //     this.setState({ loading: false, data: data.data })
+  //   );
+  // };
 
   render() {
-    const { loading, data } = this.state;
+    const { data, dataLoading } = this.props;
+    // const name = React.lazy(() => data.profile.name);
     let {
       profile: { name }
-    } = schemaTest;
-    if (loading) {
-      console.log("loading...");
-    } else {
-      name = data.data.profile.name;
+    } = dataSchema;
+    if(dataLoading === false) {
+      name = data.profile && data.profile.name;
     }
+
+    // const { loading, data } = this.state;
+    // let {
+    //   profile: { name }
+    // } = dataSchema;
+    // if (loading) {
+    //   console.log("loading...");
+    // } else {
+    //   name = data.data.profile.name;
+    // }
 
     return (
       <React.Fragment>
+        {/* <Suspense fallback={<h1>Loading name...</h1>}>
+          {this.renderData()}
+        </Suspense> */}
         {/* <Header /> */}
         <p>{name}</p>
         <hr />
@@ -80,4 +101,18 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  const {
+    dataReducers: { data, loading }
+  } = state;
+  return {
+    data,
+    dataLoading: loading
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  reqData: () => dispatch(reqData())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

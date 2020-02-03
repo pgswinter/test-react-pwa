@@ -3,6 +3,6 @@ export default class {
         this.initApi = initApi;
     }
     get = () => {
-        return this.initApi.get(`http://localhost:3535/api`);
+        return this.initApi.get(`https://simple-api-online.herokuapp.com/api`);
     }
 }
